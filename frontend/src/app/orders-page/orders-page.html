@@ -1,0 +1,47 @@
+<h2>Siparişlerim</h2>
+
+<p-button label="Yenile" (click)="loadOrders()" severity="secondary" [outlined]="true" />
+
+@if (message()) {
+<p>{{ message() }}</p>
+}
+
+@if (loading()) {
+<p>Yükleniyor...</p>
+} @else if (orders().length === 0) {
+<p>Henüz siparişin yok</p>
+} @else {
+@for (order of orders(); track order.id) {
+<div style="border: 1px solid #999; padding: 1rem; margin-bottom: 1rem;">
+  <p><strong>Sipariş #{{ order.id }}</strong> — Durum: {{ order.status }}</p>
+  <p>Toplam: {{ order.totalAmount }} ₺</p>
+  <p-table [value]="order.items">
+    <ng-template #header>
+      <tr>
+        <th>Görsel</th>
+        <th>Ürün Adı</th>
+        <th>Miktar</th>
+        <th>Birim Fiyat</th>
+        <th>Satır Toplamı</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-item>
+      <tr>
+        <td>
+          <img
+            [src]="item.productImageId ? productService.getImageUrl(item.productImageId) : placeholderImage"
+            [alt]="item.productName"
+            loading="lazy"
+            (error)="onImageError($event)"
+            style="width: 60px; height: 60px; object-fit: cover;">
+        </td>
+        <td>{{ item.productName }}</td>
+        <td>{{ item.quantity }} adet</td>
+        <td>{{ item.unitPrice }} ₺</td>
+        <td>{{ item.lineTotal }} ₺</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+}
+}

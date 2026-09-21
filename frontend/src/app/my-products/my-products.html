@@ -1,0 +1,86 @@
+<h2>Ürünlerim</h2>
+
+@if (isSellerOnly) {
+<a routerLink="/my-products/add" class="add-product-link p-button p-button-primary p-component" data-p-severity="primary">
+  <span class="p-button-label">Yeni Ürün Ekle</span>
+</a>
+}
+
+@if (message()) {
+<p>{{ message() }}</p>
+}
+
+@if (loading()) {
+<p>Yükleniyor...</p>
+} @else if (products().length === 0) {
+<p>Henüz ürün eklemedin</p>
+} @else {
+<ul class="product-list">
+  @for (product of products(); track product.id) {
+  <li class="product-card">
+    <img
+      class="product-card-image"
+      [src]="product.images && product.images.length > 0 ? productService.getImageUrl(product.images[0].id) : 'https://via.placeholder.com/80x80?text=No+Image'"
+      [alt]="product.name">
+    <div class="product-card-info">
+      <strong class="product-card-name">{{ product.name }}</strong>
+      <span class="product-card-meta">{{ product.price }} ₺ — {{ product.isActive ? 'Aktif' : 'Pasif' }} — Stok: {{ product.stockQuantity ?? 0 }}</span>
+      <div class="product-card-actions">
+        <p-button label="Düzenle" (click)="startEdit(product)" severity="secondary" />
+        <p-button label="Sil" (click)="deleteProduct(product.id)" severity="danger" />
+        <p-button label="+ Stok Ekle" (click)="openStockDialog(product)" severity="secondary" [outlined]="true" />
+      </div>
+    </div>
+  </li>
+  }
+</ul>
+}
+
+<p-dialog header="Ürünü Düzenle" [visible]="editingProductId() !== null" (visibleChange)="onEditDialogVisibleChange($event)" [modal]="true" [style]="{width: '450px'}">
+  <form (ngSubmit)="saveEdit()" class="edit-product-form">
+    <div class="form-field">
+      <label for="editCategoryId">Kategori</label>
+      <p-select
+        inputId="editCategoryId"
+        [options]="categories()"
+        optionLabel="name"
+        optionValue="id"
+        [(ngModel)]="editCategoryId"
+        name="editCategoryId"
+        placeholder="Kategori seçin" />
+    </div>
+    <div class="form-field">
+      <label for="editName">Ad</label>
+      <input pInputText id="editName" type="text" name="editName" [(ngModel)]="editName">
+    </div>
+    <div class="form-field">
+      <label for="editDescription">Açıklama</label>
+      <textarea pTextarea id="editDescription" name="editDescription" [(ngModel)]="editDescription" rows="4"></textarea>
+    </div>
+    <div class="form-field">
+      <label for="editPrice">Fiyat</label>
+      <input pInputText id="editPrice" type="number" name="editPrice" [(ngModel)]="editPrice">
+    </div>
+    <div class="form-field">
+      <label>Görsel Değiştir</label>
+      <p-fileupload
+        mode="basic"
+        name="editProductImage"
+        accept="image/*"
+        chooseLabel="Görsel Seç"
+        [auto]="false"
+        (onSelect)="onEditFileSelected($event.originalEvent)" />
+    </div>
+    <p-button type="submit" label="Kaydet" />
+  </form>
+</p-dialog>
+
+<p-dialog header="Stok Ekle" [visible]="stockDialogProductId() !== null" (visibleChange)="onStockDialogVisibleChange($event)" [modal]="true" [style]="{width: '350px'}">
+  <form (ngSubmit)="confirmAddStock()" class="stock-add-form">
+    <div class="form-field">
+      <label for="stockToAdd">Eklenecek Miktar</label>
+      <p-inputnumber inputId="stockToAdd" name="stockToAdd" [(ngModel)]="stockToAdd" [min]="1" [showButtons]="true" required />
+    </div>
+    <p-button type="submit" label="Onayla" [disabled]="!stockToAdd" />
+  </form>
+</p-dialog>

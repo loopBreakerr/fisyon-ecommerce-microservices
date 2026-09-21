@@ -1,0 +1,103 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: realm-info-test
+              uri: http://localhost:8080
+              predicates:
+                - Path=/api/realm-info/**
+              filters:
+                - RewritePath=/api/realm-info/(?<segment>.*), /realms/ecommerce-realm/$\{segment}
+
+            - id: catalog-service
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/catalog/**
+              filters:
+                - RewritePath=/api/catalog/(?<segment>.*), /$\{segment}
+
+            - id: core-service
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/cart/**,/api/orders/**,/api/inventory/**,/api/payments/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+            - id: core-service-admin
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/admin/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+            - id: fulfillment-service
+              uri: http://localhost:8086
+              predicates:
+                - Path=/api/shipping/**,/api/notifications/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+            - id: user-profile-service
+              uri: http://localhost:8088
+              predicates:
+                - Path=/api/profile/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+            - id: discovery-service
+              uri: http://localhost:8088
+              predicates:
+                - Path=/api/search/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+            - id: review-service
+              uri: http://localhost:8088
+              predicates:
+                - Path=/api/reviews/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+            - id: recommendation-service
+              uri: http://localhost:8088
+              predicates:
+                - Path=/api/recommendations/**
+              filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: "http://localhost:4200"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                  - PATCH
+                allowedHeaders: "*"
+                allowCredentials: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/ecommerce-realm
+
+management:
+  endpoint:
+    gateway:
+      access: read-only
+  endpoints:
+    web:
+      exposure:
+        include: gateway, health

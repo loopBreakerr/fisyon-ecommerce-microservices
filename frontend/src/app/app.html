@@ -1,0 +1,52 @@
+<p-toast></p-toast>
+<p-confirmdialog></p-confirmdialog>
+
+<nav class="main-nav">
+  <div class="nav-left">
+    <img src="logo.jpg" alt="Fisyon" class="nav-logo">
+    <div class="nav-links">
+      <a routerLink="/products">Ürünler</a>
+      @if (isLoggedIn && !isSeller) {
+        <a routerLink="/cart">Sepetim
+          @if (cartItemCount() > 0) {
+            <span style="background: red; color: white; border-radius: 50%;
+                          padding: 2px 6px; font-size: 0.75em;">{{ cartItemCount() }}</span>
+          }
+        </a>
+        <a routerLink="/orders">Siparişlerim</a>
+      }
+      @if (isSellerOnly) {
+        <a routerLink="/my-products">Ürünlerim</a>
+        <a routerLink="/seller-orders">Gelen Siparişler</a>
+      }
+      @if (isAdmin) {
+        <a routerLink="/admin/carts">Tüm Sepetler</a>
+        <a routerLink="/admin/orders">Tüm Siparişler</a>
+        <a routerLink="/admin/sellers">Satıcılar</a>
+        <a routerLink="/admin/customers">Müşteriler</a>
+      }
+    </div>
+  </div>
+
+  <div class="nav-right">
+    @if (isLoggedIn) {
+    <app-notification-bell />
+    }
+    <p-button
+      [text]="true"
+      [rounded]="true"
+      severity="secondary"
+      [icon]="isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+      (click)="toggleDarkMode()"
+      [ariaLabel]="isDarkMode() ? 'Açık temaya geç' : 'Koyu temaya geç'" />
+    @if (isLoggedIn) {
+    <span>Hoş geldin, {{ username }}</span>
+    <p-button type="button" label="Çıkış Yap" (click)="logout()" severity="secondary" />
+    } @else {
+    <p-button type="button" label="Giriş Yap" (click)="login()" severity="primary" />
+    <p-button type="button" label="Kayıt Ol" (click)="register()" severity="secondary" [outlined]="true" />
+    }
+  </div>
+</nav>
+
+<router-outlet />

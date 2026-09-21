@@ -1,0 +1,44 @@
+.add-product-page {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.add-product-page p-card {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+}
+
+.add-product-title {
+  margin: 0;
+  padding: 1rem 1rem 0;
+}
+
+.form-message {
+  margin: 0 0 1rem;
+}
+
+.add-product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-field label {
+  font-weight: 600;
+}
+
+.add-product-form p-select,
+.add-product-form input[pInputText],
+.add-product-form textarea,
+.add-product-form p-button,
+.add-product-form p-inputnumber {
+  width: 100%;
+}

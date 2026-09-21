@@ -1,0 +1,30 @@
+services: {}
+  # Faz 4'te her mikroservis buraya eklenecek, örnek şablon:
+  #
+  # api-gateway:
+  #   build:
+  #     context: ./api-gateway
+  #   container_name: api-gateway
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - keycloak
+  #   networks:
+  #     - backend
+  #
+  # catalog-service:
+  #   build:
+  #     context: ./catalog-service
+  #   container_name: catalog-service
+  #   environment:
+  #     DATABASE_URL: jdbc:postgresql://postgres:5432/catalog_db
+  #     KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  #   depends_on:
+  #     - postgres
+  #     - kafka
+  #   networks:
+  #     - backend
+
+networks:
+  backend:
+    driver: bridge

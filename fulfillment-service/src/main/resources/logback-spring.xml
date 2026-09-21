@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Spring Boot'un kendi varsayilan konsol appender tanimini dahil ediyoruz -
+         boylece mevcut konsol log gorunumu (renk, pattern) HICBIR SEKILDE degismiyor,
+         sadece yanina yeni bir JSON dosya appender'i ekliyoruz. -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <!-- Yapilandirilmis (JSON) log dosyasi - ileride Filebeat/dogrudan appender gibi
+         herhangi bir log toplama yontemi secilirse hazir olsun diye. Su an sadece
+         formatliyor, hicbir yere gondermiyor (Elasticsearch/Logstash entegrasyonu
+         bu fazin kapsaminda degil). -->
+    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/fulfillment-service.json.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/fulfillment-service.json.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"fulfillment-service"}</customFields>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="JSON_FILE"/>
+    </root>
+</configuration>

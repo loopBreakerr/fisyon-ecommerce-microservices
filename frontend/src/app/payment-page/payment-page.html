@@ -1,0 +1,73 @@
+<h2>Ödeme</h2>
+
+@if (message()) {
+<p>{{ message() }}</p>
+}
+
+@if (loading()) {
+<p>Yükleniyor...</p>
+} @else if (!cart() || cart()!.items.length === 0) {
+<p>Sepetin boş</p>
+} @else {
+<p-table [value]="cart()!.items">
+  <ng-template #header>
+    <tr>
+      <th>Görsel</th>
+      <th>Ürün Adı</th>
+      <th>Miktar</th>
+      <th>Birim Fiyat</th>
+      <th>Toplam</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td>
+        <img
+          [src]="item.productImageId ? productService.getImageUrl(item.productImageId) : placeholderImage"
+          [alt]="item.productName"
+          loading="lazy"
+          (error)="onImageError($event)"
+          style="width: 60px; height: 60px; object-fit: cover;">
+      </td>
+      <td>{{ item.productName }}</td>
+      <td>{{ item.quantity }} adet</td>
+      <td>{{ item.unitPriceSnapshot }} ₺</td>
+      <td>{{ item.lineTotal }} ₺</td>
+    </tr>
+  </ng-template>
+</p-table>
+<p><strong>Toplam: {{ cart()!.totalAmount }} ₺</strong></p>
+
+<div style="margin: 1rem 0;">
+  <p><strong>Ödeme Yöntemi:</strong></p>
+  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+    <p-radiobutton
+      name="paymentMethod"
+      inputId="cardOnDelivery"
+      value="CARD_ON_DELIVERY"
+      [ngModel]="selectedPaymentMethod()"
+      (ngModelChange)="selectedPaymentMethod.set($event)" />
+    <label for="cardOnDelivery">Kapıda Kredi Kartı</label>
+  </div>
+  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+    <p-radiobutton
+      name="paymentMethod"
+      inputId="cod"
+      value="CASH_ON_DELIVERY"
+      [ngModel]="selectedPaymentMethod()"
+      (ngModelChange)="selectedPaymentMethod.set($event)" />
+    <label for="cod">Kapıda Nakit</label>
+  </div>
+  <div style="display: flex; align-items: center; gap: 0.5rem;">
+    <p-radiobutton
+      name="paymentMethod"
+      inputId="cardOnline"
+      value="CARD_ONLINE"
+      [ngModel]="selectedPaymentMethod()"
+      (ngModelChange)="selectedPaymentMethod.set($event)" />
+    <label for="cardOnline">Online Kredi Kartı</label>
+  </div>
+</div>
+
+<p-button label="Ödemeyi Onayla" (click)="confirmPayment()" [disabled]="submitting()" severity="primary" />
+}

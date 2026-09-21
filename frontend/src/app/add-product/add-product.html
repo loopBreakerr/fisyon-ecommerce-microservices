@@ -1,0 +1,62 @@
+<div class="add-product-page">
+  <p-card>
+    <ng-template #header>
+      <h2 class="add-product-title">Yeni Ürün Ekle</h2>
+    </ng-template>
+
+    @if (message()) {
+    <p class="form-message">{{ message() }}</p>
+    }
+
+    @if (categories().length === 0) {
+    <p class="form-message">Önce bir kategori oluşturulmalı, satıcı/admin panelinden ekleyebilirsiniz.</p>
+    }
+
+    <form (ngSubmit)="submitProduct()" class="add-product-form">
+      <div class="form-field">
+        <label for="categoryId">Kategori</label>
+        <p-select
+          inputId="categoryId"
+          [options]="categories()"
+          optionLabel="name"
+          optionValue="id"
+          [(ngModel)]="categoryId"
+          name="categoryId"
+          placeholder="Kategori seçin" />
+      </div>
+
+      <div class="form-field">
+        <label for="name">Ad</label>
+        <input pInputText id="name" type="text" name="name" [(ngModel)]="name" required>
+      </div>
+
+      <div class="form-field">
+        <label for="description">Açıklama</label>
+        <textarea pTextarea id="description" name="description" [(ngModel)]="description" rows="4"></textarea>
+      </div>
+
+      <div class="form-field">
+        <label for="price">Fiyat</label>
+        <input pInputText id="price" type="number" name="price" [(ngModel)]="price" required>
+      </div>
+
+      <div class="form-field">
+        <label for="initialStock">Başlangıç Stok</label>
+        <p-inputnumber inputId="initialStock" name="initialStock" [(ngModel)]="initialStock" [min]="0" [showButtons]="true" required />
+      </div>
+
+      <div class="form-field">
+        <label>Ürün Görseli</label>
+        <p-fileupload
+          mode="basic"
+          name="productImage"
+          accept="image/*"
+          chooseLabel="Görsel Seç"
+          [auto]="false"
+          (onSelect)="onFileSelected($event.originalEvent)" />
+      </div>
+
+      <p-button type="submit" label="Ürünü Kaydet" [disabled]="categories().length === 0" />
+    </form>
+  </p-card>
+</div>

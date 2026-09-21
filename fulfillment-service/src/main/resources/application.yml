@@ -1,0 +1,51 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: fulfillment-service
+
+  datasource:
+    notification:
+      url: jdbc:postgresql://localhost:5432/notification_db
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 5
+    shipping:
+      url: jdbc:postgresql://localhost:5432/shipping_db
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/ecommerce-realm
+
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      group-id: fulfillment-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+
+keycloak:
+  admin:
+    base-url: http://localhost:8080
+    realm: ecommerce-realm
+    token-uri: http://localhost:8080/realms/ecommerce-realm/protocol/openid-connect/token
+    client-id: core-service-admin-client
+    client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET}

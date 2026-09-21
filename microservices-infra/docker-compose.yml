@@ -1,0 +1,5 @@
+# Bu dosya, projeyi 2 mantıksal parçaya bölüp tek noktadan çalıştırmayı sağlar.
+# "docker compose up -d" dediğinde ikisi de otomatik olarak birleşip ayağa kalkar.
+include:
+  - docker-compose.infra.yml
+  - docker-compose.services.yml

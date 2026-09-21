@@ -1,0 +1,38 @@
+<h2>Tüm Sepetler (Admin)</h2>
+
+<p-button label="Yenile" (click)="loadCarts()" severity="secondary" [outlined]="true" />
+
+@if (message()) {
+<p>{{ message() }}</p>
+}
+
+@if (loading()) {
+<p>Yükleniyor...</p>
+} @else if (carts().length === 0) {
+<p>Aktif sepet yok</p>
+} @else {
+<p-table [value]="carts()">
+  <ng-template #header>
+    <tr>
+      <th>Sepet #</th>
+      <th>Kullanıcı</th>
+      <th>Ürünler</th>
+      <th>Toplam</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-cart>
+    <tr>
+      <td>{{ cart.id }}</td>
+      <td>{{ cart.userId }}</td>
+      <td>
+        <ul>
+          @for (item of cart.items; track item.id) {
+          <li>{{ item.productName }} — {{ item.quantity }} adet</li>
+          }
+        </ul>
+      </td>
+      <td>{{ cart.totalAmount }} ₺</td>
+    </tr>
+  </ng-template>
+</p-table>
+}

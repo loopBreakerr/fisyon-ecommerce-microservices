@@ -1,0 +1,30 @@
+<h2>Müşteriler</h2>
+
+<p-button label="Yenile" (click)="loadCustomers()" severity="secondary" [outlined]="true" />
+
+@if (message()) {
+<p>{{ message() }}</p>
+}
+
+@if (loading()) {
+<p>Yükleniyor...</p>
+} @else if (customers().length === 0) {
+<p>Hiç müşteri yok</p>
+} @else {
+<p-table [value]="customers()">
+  <ng-template #header>
+    <tr>
+      <th>ID</th>
+      <th>Kullanıcı Adı</th>
+      <th>E-posta</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-customer>
+    <tr>
+      <td>{{ customer.id }}</td>
+      <td>{{ customer.username }}</td>
+      <td>{{ customer.email }}</td>
+    </tr>
+  </ng-template>
+</p-table>
+}

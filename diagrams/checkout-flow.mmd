@@ -1,0 +1,44 @@
+sequenceDiagram
+    autonumber
+    actor U as Kullanici Angular
+    participant GW as api-gateway 8000
+    participant OC as OrderController 8081
+    participant OS as OrderService checkout
+    participant CART as Cart Feign
+    participant CAT as Catalog Feign
+    participant ODB as order_db
+    participant K as Kafka
+    U->>GW: POST /api/orders/checkout ve Bearer JWT
+    GW->>GW: JWT dogrula Keycloak issuer
+    GW->>OC: POST /orders/checkout
+    OC->>OC: PreAuthorize musteri rolu, userId jwt subject
+    OC->>OS: checkout userId paymentMethod
+    OS->>CART: getMyCart JWT tasinir
+    CART-->>OS: sepet ve kalemler
+    OS->>ODB: Order kaydet PENDING total sifir
+    loop her sepet kalemi
+        OS->>CAT: getProductById productId
+        CAT-->>OS: fiyat isim sellerId gorselId
+        OS->>ODB: OrderItem kaydet snapshot
+    end
+    OS->>ODB: Order total guncelle ve OrderStatusHistory PENDING
+    OS->>CART: clearCart
+    OS->>K: publish order-events
+    OS-->>U: 200 OrderModel status PENDING
+    Note over K: order-events uc tuketici farkli groupId herkes kopya alir
+    par Payment listener
+        K->>K: Payment SUCCESS ve PaymentTransaction payment_db
+        K->>K: publish payment-events
+    and Inventory listener
+        K->>K: stok dus ve InventoryMovement OUT inventory_db
+    and Notification listener
+        K->>K: musteri satici admin bildirimleri notification_db
+    end
+    Note over K: payment-events uc tuketici
+    par Order listener
+        K->>ODB: Order status PAID ve OrderStatusHistory PAID
+    and Shipping listener
+        K->>K: Shipment PREPARING trackingNumber UUID shipping_db
+    and Notification listener
+        K->>K: Odemeniz Basarili bildirimi
+    end

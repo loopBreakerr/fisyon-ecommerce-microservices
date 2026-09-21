@@ -1,0 +1,90 @@
+<div class="sidebar-toggle-wrapper">
+  <p-button
+    type="button"
+    label="☰ Kategoriler"
+    (click)="toggleSidebar()"
+    severity="secondary"
+    [outlined]="true"
+    [attr.aria-expanded]="sidebarOpen()"
+    ariaLabel="Kategori filtresini aç/kapat" />
+</div>
+
+<div class="product-page">
+  <aside class="category-sidebar" [class.open]="sidebarOpen()">
+    <ul>
+      <li>
+        <a (click)="selectCategory(null)" [class.active]="selectedCategoryId() === null">Tüm Ürünler</a>
+      </li>
+      @for (category of categories(); track category.id) {
+      <li>
+        <a (click)="selectCategory(category.id)" [class.active]="selectedCategoryId() === category.id">{{ category.name }}</a>
+      </li>
+      }
+    </ul>
+  </aside>
+
+  <div class="product-main">
+    <div class="product-header">
+      <h2>Ürünler</h2>
+      <div class="sort-wrapper">
+        <label for="sortOrder">Sırala:</label>
+        <p-select
+          inputId="sortOrder"
+          [options]="sortOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="sortOrder()"
+          (ngModelChange)="sortOrder.set($event)" />
+      </div>
+    </div>
+    @if (message()) {
+    <p>{{ message() }}</p>
+    }
+
+    <div class="product-grid">
+      @for (product of sortedProducts(); track product.id) {
+      <p-card>
+        <ng-template #header>
+          <img
+            class="product-card-image"
+            style="cursor: pointer"
+            [src]="product.images && product.images.length > 0 ? productService.getImageUrl(product.images[0].id) : placeholderImage"
+            [alt]="product.name"
+            (click)="openProductDetail(product.id)">
+        </ng-template>
+
+        <h3 class="product-card-title">{{ product.name }}</h3>
+        <p class="product-card-description">{{ product.description }}</p>
+        <p class="product-card-price">{{ product.price }} ₺</p>
+        <span class="product-card-stock">Stok: {{ product.stockQuantity ?? 0 }}</span>
+
+        <ng-template #footer>
+          @if (!isSeller) {
+          <p-button label="Sepete Ekle" (click)="addToCart(product.id)" />
+          }
+        </ng-template>
+      </p-card>
+      }
+    </div>
+  </div>
+</div>
+
+<p-dialog header="Ürün Detayı" [visible]="selectedProduct() !== null" (visibleChange)="onProductDetailVisibleChange($event)" [modal]="true" [style]="{width: '450px'}">
+  @if (selectedProduct(); as product) {
+  <img
+    class="product-detail-image"
+    [src]="product.images && product.images.length > 0 ? productService.getImageUrl(product.images[0].id) : placeholderImage"
+    [alt]="product.name"
+    style="width: 100%; max-height: 250px; object-fit: cover;">
+  <h3>{{ product.name }}</h3>
+  <p>{{ product.description }}</p>
+  <p class="product-card-price">{{ product.price }} ₺</p>
+  <span class="product-card-stock">Stok: {{ product.stockQuantity ?? 0 }}</span>
+
+  @if (!isSeller) {
+  <div style="margin-top: 1rem;">
+    <p-button label="Sepete Ekle" (click)="addToCart(product.id)" />
+  </div>
+  }
+  }
+</p-dialog>

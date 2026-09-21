@@ -1,0 +1,48 @@
+<h2>Sepetim</h2>
+
+@if (message()) {
+<p>{{ message() }}</p>
+}
+
+@if (loading()) {
+<p>Yükleniyor...</p>
+} @else if (!cart() || cart()!.items.length === 0) {
+<p>Sepetin boş</p>
+} @else {
+<p-table [value]="cart()!.items">
+  <ng-template #header>
+    <tr>
+      <th>Görsel</th>
+      <th>Ürün Adı</th>
+      <th>Miktar</th>
+      <th>Birim Fiyat</th>
+      <th>Toplam</th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-item>
+    <tr>
+      <td>
+        <img
+          [src]="item.productImageId ? productService.getImageUrl(item.productImageId) : placeholderImage"
+          [alt]="item.productName"
+          loading="lazy"
+          (error)="onImageError($event)"
+          style="width: 60px; height: 60px; object-fit: cover;">
+      </td>
+      <td>{{ item.productName }}</td>
+      <td>
+        <p-button label="-" (click)="changeQuantity(item.id, item.quantity - 1)" severity="secondary" size="small" />
+        {{ item.quantity }} adet
+        <p-button label="+" (click)="changeQuantity(item.id, item.quantity + 1)" severity="secondary" size="small" />
+      </td>
+      <td>{{ item.unitPriceSnapshot }} ₺</td>
+      <td>{{ item.lineTotal }} ₺</td>
+      <td><p-button label="Kaldır" (click)="removeItem(item.id)" severity="danger" size="small" /></td>
+    </tr>
+  </ng-template>
+</p-table>
+<p><strong>Toplam: {{ cart()!.totalAmount }} ₺</strong></p>
+
+<p-button label="Siparişi Onayla" (click)="checkout()" severity="primary" />
+}

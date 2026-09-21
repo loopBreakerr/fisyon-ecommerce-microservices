@@ -1,0 +1,40 @@
+<h2>Tüm Siparişler (Admin)</h2>
+
+<p-button label="Yenile" (click)="loadOrders()" severity="secondary" [outlined]="true" />
+
+@if (message()) {
+<p>{{ message() }}</p>
+}
+
+@if (loading()) {
+<p>Yükleniyor...</p>
+} @else if (orders().length === 0) {
+<p>Sipariş yok</p>
+} @else {
+<p-table [value]="orders()">
+  <ng-template #header>
+    <tr>
+      <th>Sipariş #</th>
+      <th>Kullanıcı</th>
+      <th>Durum</th>
+      <th>Ürünler</th>
+      <th>Toplam</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-order>
+    <tr>
+      <td>{{ order.id }}</td>
+      <td>{{ order.userId }}</td>
+      <td>{{ order.status }}</td>
+      <td>
+        <ul>
+          @for (item of order.items; track item.id) {
+          <li>Ürün #{{ item.productId }} — {{ item.quantity }} adet</li>
+          }
+        </ul>
+      </td>
+      <td>{{ order.totalAmount }} ₺</td>
+    </tr>
+  </ng-template>
+</p-table>
+}

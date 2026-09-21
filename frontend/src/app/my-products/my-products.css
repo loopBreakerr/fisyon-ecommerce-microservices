@@ -1,0 +1,97 @@
+.add-product-link {
+  margin-bottom: 24px;
+}
+
+.edit-product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 0.5rem;
+}
+
+.edit-product-form .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.edit-product-form .form-field label {
+  font-weight: 600;
+}
+
+.edit-product-form p-select,
+.edit-product-form input[pInputText],
+.edit-product-form textarea,
+.edit-product-form p-button {
+  width: 100%;
+}
+
+.product-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.product-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid #1976d2;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.product-card-image {
+  flex: 0 0 120px;
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.product-card-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.product-card-name {
+  font-size: 1.05rem;
+}
+
+.product-card-meta {
+  /* .product-card kendi arkaplanını tanımlamıyor (sayfa kanvasını takip ediyor),
+     bu yüzden sabit bir gri yerine light-dark() kullanıyoruz: light modda #555
+     (değişmedi), dark modda otomatik koyulaşan zeminde okunaklı kalması için #ccc. */
+  color: light-dark(#555, #ccc);
+}
+
+.product-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.stock-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 0.5rem;
+}
+
+.stock-add-form .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.stock-add-form .form-field label {
+  font-weight: 600;
+}
+
+.stock-add-form p-inputnumber,
+.stock-add-form p-button {
+  width: 100%;
+}
